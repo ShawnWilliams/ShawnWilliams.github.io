@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-21T09:12:52.337Z</updated>
+  <updated>2017-07-21T09:22:23.437Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/07/21/Caltech-CS179%E5%8F%8AGPU%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B00/"/>
     <id>http://yoursite.com/2017/07/21/Caltech-CS179及GPU编程笔记0/</id>
     <published>2017-07-21T06:45:58.000Z</published>
-    <updated>2017-07-21T09:12:52.337Z</updated>
+    <updated>2017-07-21T09:22:23.437Z</updated>
     
     <content type="html"><![CDATA[<h3 id="GPU的起源与发展"><a href="#GPU的起源与发展" class="headerlink" title="GPU的起源与发展"></a>GPU的起源与发展</h3><p>GPU是Graphics Processing Unit的缩写，中文名叫图形处理器，也就是我们常说的显卡。GPU起初专门用来处理图形渲染。而更早以前，这一任务是由CPU来完成，但CPU执行此类任务效率太低，于是GPU诞生了。发展至今，GPU不仅仅用于图形渲染，在通用计算领域也大放异彩，而谈到通用计算，就不得不提起CUDA。</p>
 <hr>
@@ -37,6 +37,8 @@
       &lt;h3 id=&quot;GPU的起源与发展&quot;&gt;&lt;a href=&quot;#GPU的起源与发展&quot; class=&quot;headerlink&quot; title=&quot;GPU的起源与发展&quot;&gt;&lt;/a&gt;GPU的起源与发展&lt;/h3&gt;&lt;p&gt;GPU是Graphics Processing Unit的缩写，中文名叫图形处理器，
     
     </summary>
+    
+      <category term="GPU编程" scheme="http://yoursite.com/categories/GPU%E7%BC%96%E7%A8%8B/"/>
     
     
       <category term="gpu" scheme="http://yoursite.com/tags/gpu/"/>
