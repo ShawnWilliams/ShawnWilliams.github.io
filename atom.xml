@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-21T02:51:54.485Z</updated>
+  <updated>2017-07-21T09:12:52.337Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,43 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Caltech CS179及GPU编程笔记0</title>
+    <link href="http://yoursite.com/2017/07/21/Caltech-CS179%E5%8F%8AGPU%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B00/"/>
+    <id>http://yoursite.com/2017/07/21/Caltech-CS179及GPU编程笔记0/</id>
+    <published>2017-07-21T06:45:58.000Z</published>
+    <updated>2017-07-21T09:12:52.337Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="GPU的起源与发展"><a href="#GPU的起源与发展" class="headerlink" title="GPU的起源与发展"></a>GPU的起源与发展</h3><p>GPU是Graphics Processing Unit的缩写，中文名叫图形处理器，也就是我们常说的显卡。GPU起初专门用来处理图形渲染。而更早以前，这一任务是由CPU来完成，但CPU执行此类任务效率太低，于是GPU诞生了。发展至今，GPU不仅仅用于图形渲染，在通用计算领域也大放异彩，而谈到通用计算，就不得不提起CUDA。</p>
+<hr>
+<h3 id="什么是CUDA"><a href="#什么是CUDA" class="headerlink" title="什么是CUDA"></a>什么是CUDA</h3><p>CUDA，Compute Unified Device Architecture的简称，是由NVIDIA公司创立的基于他们公司生产的图形处理器GPUs（Graphics Processing Units,可以通俗的理解为显卡）的一个并行计算平台和编程模型。开发人员可以通过调用CUDA的API，来进行并行编程，达到高性能计算目的。</p>
+<hr>
+<h3 id="GPU编程课程介绍"><a href="#GPU编程课程介绍" class="headerlink" title="GPU编程课程介绍"></a>GPU编程课程介绍</h3><p>Caltech-CS179是加州理工的一门讲解GPU编程的课程，主要讲述了什么类型的任务适合在GPU上执行，以及应该用什么样的策略来“迎合”GPU的硬件特性从而获得性能提升。本系列博客主要是整理博主学习该课程的笔记，同时也会查阅其他资料做补充。</p>
+<p>在上这门课程以前，需要有一定的C/C++编程能力。</p>
+<p>课程链接: <a href="http://courses.cms.caltech.edu/cs179/" target="_blank" rel="external">http://courses.cms.caltech.edu/cs179/</a></p>
+<p>接下来，我们开始正式学习GPU编程。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;GPU的起源与发展&quot;&gt;&lt;a href=&quot;#GPU的起源与发展&quot; class=&quot;headerlink&quot; title=&quot;GPU的起源与发展&quot;&gt;&lt;/a&gt;GPU的起源与发展&lt;/h3&gt;&lt;p&gt;GPU是Graphics Processing Unit的缩写，中文名叫图形处理器，
+    
+    </summary>
+    
+    
+      <category term="gpu" scheme="http://yoursite.com/tags/gpu/"/>
+    
+      <category term="programming" scheme="http://yoursite.com/tags/programming/"/>
+    
+      <category term="cuda" scheme="http://yoursite.com/tags/cuda/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Ubuntu16.04下用github+hexo搭建博客</title>
     <link href="http://yoursite.com/2017/07/21/Ubuntu16-04%E4%B8%8B%E7%94%A8github-hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/"/>
     <id>http://yoursite.com/2017/07/21/Ubuntu16-04下用github-hexo搭建博客/</id>
     <published>2017-07-21T02:25:22.000Z</published>
-    <updated>2017-07-21T02:51:54.485Z</updated>
+    <updated>2017-07-21T02:55:25.719Z</updated>
     
     <summary type="html">
     
@@ -31,7 +63,7 @@
     
       <category term="Hexo" scheme="http://yoursite.com/tags/Hexo/"/>
     
-      <category term="node.js" scheme="http://yoursite.com/tags/node-js/"/>
+      <category term="nvm" scheme="http://yoursite.com/tags/nvm/"/>
     
   </entry>
   
