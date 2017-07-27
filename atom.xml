@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-21T09:22:23.437Z</updated>
+  <updated>2017-07-27T03:37:08.185Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,151 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Caltech CS179及GPU编程笔记1</title>
+    <link href="http://yoursite.com/2017/07/21/Caltech-CS179%E5%8F%8AGPU%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B01/"/>
+    <id>http://yoursite.com/2017/07/21/Caltech-CS179及GPU编程笔记1/</id>
+    <published>2017-07-21T09:26:05.000Z</published>
+    <updated>2017-07-27T03:37:08.185Z</updated>
+    
+    <content type="html"><![CDATA[<p>GPU适合并行编程，可并行化的程序很适合在GPU上执行，比如对于计算简单且重复但数据量很大的程序，就很适合在GPU上执行，这很类似于SIMD(single instruction, multiple data)。而那种分支很多，逻辑复杂的程序，则不适合GPU上执行。这一特性是由GPU的硬件架构决定的。</p>
+<p>GPU执行程序的流程通常是</p>
+<blockquote>
+<ul>
+<li>在主机端上产生输入数据</li>
+<li>在主机端为输出数据分配内存</li>
+<li>在GPU端为输入输出数据分配内存</li>
+<li>将输入数据从主机端拷贝到GPU端</li>
+<li>调用GPU执行程序</li>
+<li>将处理结果从GPU端拷贝回主机端</li>
+</ul>
+</blockquote>
+<p>其中调用GPU执行程序是代码的核心段</p>
+<p>主机端代码由CPU执行，由g++编译，device端的代码由GPU执行，由nvcc编译。</p>
+<p><img src="/home/shawn/图片/GPU结构.png" alt="GPU结构"></p>
+<p>Device Memory也叫Global Memory, 访问Device Memory比内存更快</p>
+<p>GPU有很多Streaming Multiprocessors(SMs),每一个SM有多个处理器，但是只有一个指令单元，所以属于同一SM的处理器在同一时刻只能执行相同指令。</p>
+<p>GPU执行任务的最小单元是thread,多个thread组成一个Block,多个Block组成一个Grid，Block和Grid都是三维结构，但大多数时候我们会把它们设置成一维结构（也就是把其他两个维度置为１），调用核函数（在GPU上执行的函数）时,需要声明需要调用的Grid和Block的大小<code>kernel&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(...);</code>每个block可以设置的最大thread数是有上限的（通常是512或1024），每个Grid可以设置的最大Block数也是有上限的（通常是65535），超过上限会导致输出结果出错。</p>
+<p>在执行程序时，每一个Block分配给一个SM,在SM上，一个Block被划分成多个Warps,一个Warps由32个thread组成,32个threads同一时刻只能执行同样的指令，因为一个SM只有一个Instruction uint，同一Warp里的thread在SM上是并行执行的，如果你的核函数要求在同一warp里的thread执行不同指令，那么这些不同的指令将会顺序执行而非并行执行，这叫做Warp Divergence.</p>
+<p>Parallelizable Problems:能够被拆分成相互独立的小任务</p>
+<p>Non-Parallelizable Problems:不能被拆分成相互独立的小任务</p>
+<p>CPU:　低延时，低通量</p>
+<blockquote>
+<p>CPU clock = 3GHz</p>
+<p>CPU main memory latency: ~100+ ns</p>
+<p>CPU arithmetic instruction latency: ~1+ ns</p>
+</blockquote>
+<p>GPU:　高延时，高通量</p>
+<blockquote>
+<p>GPU clock = 1GHz</p>
+<p>GPU main memory latency: ~300+ ns</p>
+<p>GPU arithmetic instruction latency: ~10+ ns</p>
+</blockquote>
+<p>(Kepler架构参数)</p>
+<p>GeForce GTX Titan Black (GK110 based)</p>
+<blockquote>
+<p>Compute throughput: 5 TFLOPS (single precision)</p>
+<p>Global memory bandwidth: 336 GB/s (84 Gfloat/s)</p>
+</blockquote>
+<p>由上可看出GPU的性能瓶颈在于IO，下面介绍一些优化IO的方法。</p>
+<ol>
+<li><p>coalesced memory accesses</p>
+<p>在从global memory读取数据时，会将该数据在物理内存上相邻的数据也都加载到缓存里,相邻数据范围是由硬件确定的，而每次被加载的一片内存区叫做cache lines。如果接下来需要读取的数据能在cache lines中找到，对提升IO性能会有很大帮助。</p>
+<p>GPU cache lines是128 bytes而且是对齐过的(对齐的意思是cache lines区域的起始地址都是128的整数倍)</p>
+</li>
+<li><p>shared memory</p>
+<p>shared memory在SM上，访问非常快(~5ns latency),大小几十kb,同一个block的thread共享同一片shared memory. shared memory大小最大为48kb per block.</p>
+<p>shared memory有两种申请方法：</p>
+<ul>
+<li><p>静态申请: <code>__shard__ float data[1024];</code></p>
+</li>
+<li><p>动态申请:</p>
+<p>Host端:</p>
+<p><code>kernel&lt;&lt;&lt;gridDim, blockDim, numBytesShMem&gt;&gt;&gt;(args);</code></p>
+<p>Device端(in kernel):</p>
+<p><code>extern __shard__ float s[];</code></p>
+<p>如果需要动态申请多个shared memory, 需要在Host端申请一个相当于所有shared memory总大小的一个shared memory,然后通过指针再将这一个大的shared memory 分配给多个小的shared memory.</p>
+<p>Host端:</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; myKernel&lt;&lt;&lt;gridSize, blockSize, nI*sizeof(int)+nF*sizeof(float)+nC*sizeof(char)&gt;&gt;&gt;(...);</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<p>device端:</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt; extern __shared__ int s[];</div><div class="line">&gt; int *integerData = s;                        // nI ints</div><div class="line">&gt; float *floatData = (float*)&amp;integerData[nI]; // nF floats</div><div class="line">&gt; char *charData = (char*)&amp;floatData[nF];      // nC chars</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>computational intensity: 对于一个数据点需要进行的操作次数。</p>
+</li>
+</ul>
+</li>
+</ol>
+<pre><code>如果computational intensity &gt; 1，尽量少用global memory IO操作，多用shared memory IO.
+</code></pre><ul>
+<li><p>对shared memory操作以后需要用__syncthread()来同步多个线程。</p>
+</li>
+<li><p>shared memory被分为32个banks，每一个bank大小四字节，当一个warp里的多个thread访问属于同一bank的不同元素，就会造成bank conflict.　bank conflict会导致对这些元素的访问是串行的而不是并行的. 可以通过每存储32个元素就空出一个位置来避免bank conflict.</p>
+</li>
+<li><p>每一个processor都有可直接存取的registers, 存取操作比shared memory还要快10x倍，每一个block可用的register上万(gtx970为65536).</p>
+</li>
+<li><p>大部分在栈上分配的变量都存储在register里，如果存不下，会放在local memory上，Local memory作用域是该thread，它物理位置位于global memory上，访问比register慢很多。</p>
+</li>
+<li><p>如果同一时刻需求register数目超过上限会导致寄存器溢出，需要额外的存取操作增加开销。</p>
+</li>
+<li><p>L1 Cache对于Kepler、Maxwell架构来说，只缓存local memory, 硬件材料和shared memory相同, 大小和shared memory一样可调节(16、32、48kb)，每一个SM有自己的L1 cache.</p>
+</li>
+<li><p>L2 Cache缓存global memory 和 local memory. 大小1MB左右，被所有的SM共享.</p>
+</li>
+<li><p>constant memory是一块拥有特殊缓存的global memory, 用来存储常量，这些常量需要在host端设置。 64kb给用户，64kb给编译器, 核函数的参数就是通过constant memory来传递的. constant cache在每个SM上有8kb cache专门用于向指定warp里所有thread广播一个简单的内存地址。</p>
+<p>device端: 在全局作用域(核函数之外):</p>
+<p>　    <code>__constant__ int foo[1024];</code></p>
+<p>host端:</p>
+<p>​    <code>cudaMemcpyToSymbol(foo, h_src, sizeof(int)*1024);</code></p>
+</li>
+<li><p>texture memory特性是对于2维或3维数据能够将操作元素附近的元素都存到特殊的缓存里。对一维二维三维数组的插值很快。会将int类型转换为float型.　texture memory主要用于图像处理。在CC&gt;=3.5的GPU上，<code>const restrict</code>变量自动从texture cache加载,　也可以通过<code>__ldg</code>强制加载。</p>
+</li>
+<li><p>一个SM拥有的Warp Scheduler数目意味着同一指令可以同时发送给多少个warp.拥有的dispatcher数目意味着可以在一个warp上同时执行多少条指令（这里的叙述如有错误，欢迎指出）。</p>
+</li>
+<li><p>Occupancy = warps per SM / max warps per SM</p>
+<p>max warps / SM 只依赖于GPU，warps/SM 受控于各种资源限制。</p>
+</li>
+</ul>
+<p>同步(synchronization)是为了保证多个线程(thread)在和其他线程协同过程中不出错的一种机制。</p>
+<p>CUDA中用__syncthreads()函数来同步同一个block里的线程。</p>
+<p>原子操作(Atomic Operations)只会顺序执行，原子操作不可被中断。除非没有选择，否则不建议使用这种比较低效的操作模式。</p>
+<p>CUDA有内置的原子操作:</p>
+<p><code>atomic&lt;op&gt;(float *address, float val);</code></p>
+<p>op包括Add, Sub, Exch, min, Max, inc, Dec, And, Or, Xor</p>
+<p>这些函数都是用<code>atomicCAS(int *address, int compare, int val);</code>函数实现的。</p>
+<p>指令依赖(Instruction Dependencies)：后面的指令的执行依赖于前面指令执行的结果，所以指令需要强制顺序执行。</p>
+<p>Instruction Level Parallelism(ILP):为了避免指令依赖造成的性能损失。</p>
+<p>warp shuffle: 从同一warp的其他线程的寄存器里读取数据，这对计算同一warp里线程协同计算很有帮助(kepler架构及以上，CC&gt;=3.0才可以使用)</p>
+<p><code>int __shfl(int var, int srcLane, int width=warpSize);</code></p>
+<p>接下来介绍矩阵转置的优化算法：</p>
+<ol>
+<li>首先从global memory中读取矩阵数据，将矩阵的同一行数据放入global memory的同一列中，这样可满足global memory访问的coalesced memory accesses.　用__syncthreads()等待各线程同步。</li>
+<li>从shared memory中读取矩阵的同一列数据放到global memory输出矩阵的同一行，这样可满足global memory访问的coalesced memory accesses.</li>
+<li>在将数据读入读出shared memory时，可以将shared memory每读入一行数据就空出一格来避免读出数据时的bank conflict.</li>
+</ol>
+<p>至此，CS179的第一周第二周的知识就总结完毕了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;GPU适合并行编程，可并行化的程序很适合在GPU上执行，比如对于计算简单且重复但数据量很大的程序，就很适合在GPU上执行，这很类似于SIMD(single instruction, multiple data)。而那种分支很多，逻辑复杂的程序，则不适合GPU上执行。这一特性
+    
+    </summary>
+    
+      <category term="GPU编程" scheme="http://yoursite.com/categories/GPU%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="gpu" scheme="http://yoursite.com/tags/gpu/"/>
+    
+      <category term="programming" scheme="http://yoursite.com/tags/programming/"/>
+    
+      <category term="cuda" scheme="http://yoursite.com/tags/cuda/"/>
+    
+  </entry>
   
   <entry>
     <title>Caltech CS179及GPU编程笔记0</title>
