@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-28T03:52:21.027Z</updated>
+  <updated>2017-07-28T03:54:49.559Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/07/21/Caltech-CS179%E5%8F%8AGPU%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B01/"/>
     <id>http://yoursite.com/2017/07/21/Caltech-CS179及GPU编程笔记1/</id>
     <published>2017-07-21T09:26:05.000Z</published>
-    <updated>2017-07-28T03:52:21.027Z</updated>
+    <updated>2017-07-28T03:54:49.559Z</updated>
     
     <content type="html"><![CDATA[<p>GPU适合并行编程，可并行化的程序很适合在GPU上执行，比如对于计算简单且重复但数据量很大的程序，就很适合在GPU上执行，这很类似于SIMD(single instruction, multiple data)。而那种分支很多，逻辑复杂的程序，则不适合GPU上执行。这一特性是由GPU的硬件架构决定的。</p>
 <p>GPU执行程序的流程通常是</p>
@@ -36,7 +36,7 @@
 </blockquote>
 <p>其中调用GPU执行程序是代码的核心段</p>
 <p>主机端代码由CPU执行，由g++编译，device端的代码由GPU执行，由nvcc编译。</p>
-<p><img src="/home/shawn/图片/GPU结构.png" alt="GPU结构"></p>
+<p><img src="/home/shawn/ShawnBlog/blog/source/picture/GPU结构.png" alt="GPU结构"></p>
 <p>Device Memory也叫Global Memory, 访问Device Memory比内存更快</p>
 <p>GPU有很多Streaming Multiprocessors(SMs),每一个SM有多个处理器，但是只有一个指令单元，所以属于同一SM的处理器在同一时刻只能执行相同指令。</p>
 <p>GPU执行任务的最小单元是thread,多个thread组成一个Block,多个Block组成一个Grid，Block和Grid都是三维结构，但大多数时候我们会把它们设置成一维结构（也就是把其他两个维度置为１），调用核函数（在GPU上执行的函数）时,需要声明需要调用的Grid和Block的大小<code>kernel&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(...);</code>每个block可以设置的最大thread数是有上限的（通常是512或1024），每个Grid可以设置的最大Block数也是有上限的（通常是65535），超过上限会导致输出结果出错。</p>
