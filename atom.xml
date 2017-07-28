@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-27T03:37:08.185Z</updated>
+  <updated>2017-07-28T03:52:21.027Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/07/21/Caltech-CS179%E5%8F%8AGPU%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B01/"/>
     <id>http://yoursite.com/2017/07/21/Caltech-CS179及GPU编程笔记1/</id>
     <published>2017-07-21T09:26:05.000Z</published>
-    <updated>2017-07-27T03:37:08.185Z</updated>
+    <updated>2017-07-28T03:52:21.027Z</updated>
     
     <content type="html"><![CDATA[<p>GPU适合并行编程，可并行化的程序很适合在GPU上执行，比如对于计算简单且重复但数据量很大的程序，就很适合在GPU上执行，这很类似于SIMD(single instruction, multiple data)。而那种分支很多，逻辑复杂的程序，则不适合GPU上执行。这一特性是由GPU的硬件架构决定的。</p>
 <p>GPU执行程序的流程通常是</p>
