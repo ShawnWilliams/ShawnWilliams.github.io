@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Category: 日记 | 咸鱼骑士的博客</title>
+  <title>data_compare | 咸鱼骑士的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="技术知识整理以及生活感悟">
-<meta property="og:type" content="website">
-<meta property="og:title" content="咸鱼骑士的博客">
-<meta property="og:url" content="http://yoursite.com/categories/日记/index.html">
+  <meta name="description" content="diff命令需要将文件加载到内存中进行比对，当遇到大文件因内存不足将无法直接用diff命令比对，可以根据文件字节数、md5sum命令判断文件是否一致。如果需要知道差异具体的信息，可以用split命令将数据切分成小块，再用diff命令逐一比对切分后的小文件，  split -l line_number  -d  file_name  -l表示按行切分文件，每份文件的行数都等于line_number，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="data_compare">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/data-compare/index.html">
 <meta property="og:site_name" content="咸鱼骑士的博客">
-<meta property="og:description" content="技术知识整理以及生活感悟">
+<meta property="og:description" content="diff命令需要将文件加载到内存中进行比对，当遇到大文件因内存不足将无法直接用diff命令比对，可以根据文件字节数、md5sum命令判断文件是否一致。如果需要知道差异具体的信息，可以用split命令将数据切分成小块，再用diff命令逐一比对切分后的小文件，  split -l line_number  -d  file_name  -l表示按行切分文件，每份文件的行数都等于line_number，">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-06-08T14:32:25.986Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="咸鱼骑士的博客">
-<meta name="twitter:description" content="技术知识整理以及生活感悟">
+<meta name="twitter:title" content="data_compare">
+<meta name="twitter:description" content="diff命令需要将文件加载到内存中进行比对，当遇到大文件因内存不足将无法直接用diff命令比对，可以根据文件字节数、md5sum命令判断文件是否一致。如果需要知道差异具体的信息，可以用split命令将数据切分成小块，再用diff命令逐一比对切分后的小文件，  split -l line_number  -d  file_name  -l表示按行切分文件，每份文件的行数都等于line_number，">
   
     <link rel="alternate" href="/atom.xml" title="咸鱼骑士的博客" type="application/atom+xml">
   
@@ -67,39 +68,62 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/07/20/My-First-Post/" class="archive-article-date">
-  <time datetime="2017-07-20T13:09:54.000Z" itemprop="datePublished">7月 20</time>
+        <section id="main"><article id="post-data-compare" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/08/data-compare/" class="article-date">
+  <time datetime="2018-06-08T14:32:04.000Z" itemprop="datePublished">2018-06-08</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/20/My-First-Post/">My First Post</a>
+    <h1 class="article-title" itemprop="name">
+      data_compare
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>diff命令需要将文件加载到内存中进行比对，当遇到大文件因内存不足将无法直接用diff命令比对，可以根据文件字节数、md5sum命令判断文件是否一致。如果需要知道差异具体的信息，可以用split命令将数据切分成小块，再用diff命令逐一比对切分后的小文件，</p>
+<blockquote>
+<p>split -l line_number  -d  file_name</p>
+</blockquote>
+<p>-l表示按行切分文件，每份文件的行数都等于line_number，也可以替换为-b，表示按文件大小来切分文件,切割后文件命名默认用字母来表示，可以加-d参数使用数字来表示，默认使用两位，也就是最多切割成</p>
+<p>100份文件，如果切割文件数超过了100,会报<code>split: output file suffixes exhausted</code>错误，此时加上<code>-a number</code>用number个数字来表示切割后文件名可解决。</p>
+<p>删除文件的第k行　　</p>
+<blockquote>
+<p>sed -i  ‘kd’  file_name</p>
+</blockquote>
+<p>如何在命令行后台</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/06/08/data-compare/" data-id="cji62lhvi000485lpczy2rj0o" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/07/21/Caltech-CS179及GPU编程笔记1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Caltech CS179及GPU编程笔记1</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
 
 </section>
         
